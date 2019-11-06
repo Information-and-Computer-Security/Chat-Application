@@ -1,18 +1,11 @@
-package com.example.chat_application_alpha;
+package com.google.firebase.codelab.friendlychat;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-
-import androidx.annotation.Nullable;
-
-import com.example.chat_application_alpha.Model.Chat;
-
-import java.sql.ResultSet;
-import java.sql.Statement;
-
+import android.support.annotation.Nullable;
 
 public class DatabaseManager extends SQLiteOpenHelper {
 
@@ -126,25 +119,6 @@ public class DatabaseManager extends SQLiteOpenHelper {
         return dbString;
     }
 
-    public String databaseToString(Chat chat) {
-        String dbString = "";
-        SQLiteDatabase db = getWritableDatabase();
-        String query = "SELECT * FROM " + TABLE_MESSAGE + " WHERE " + COLUMN_SENDER + "='" + chat.getSender() + "'"
-                + " AND " + COLUMN_RECEIVER + "='" + chat.getReceiver() + "'" + " AND " + COLUMN_MESSAGE + "='" + chat.getMessage() + "'";
-        Cursor cursor = db.rawQuery(query, null);
-        cursor.moveToFirst();
-
-        dbString += cursor.getString(cursor.getColumnIndex("message"));
-
-//        while (!cursor.isAfterLast()) {
-//            if (cursor.getString(cursor.getColumnIndex("message"))!= null) {
-//                dbString += cursor.getString(cursor.getColumnIndex("message"));
-//                dbString += "\n";
-//            }
-//        }
-        db.close();
-        return dbString;
-    }
 }
 
 
