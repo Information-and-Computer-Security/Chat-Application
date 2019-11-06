@@ -36,7 +36,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String query = "CREATE TABLE " + TABLE_MESSAGE + "("
-                + COLUMN_MESSAGEID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + COLUMN_MESSAGEID + " STRING PRIMARY KEY, "
                 + COLUMN_SENDER + " TEXT NOT NULL, "
                 + COLUMN_RECEIVER + " TEXT NOT NULL, "
                 + COLUMN_MESSAGE + " TEXT NOT NULL, "
@@ -61,36 +61,16 @@ public class DatabaseManager extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void insertMessage(String sender, String receiver, String message, String key) { //TODO: change to add row into message table
+    public void insertMessage(String messageID, String sender, String receiver, String message, String key) { //TODO: change to add row into message table
         ContentValues values = new ContentValues();
+        value.put(COLUMN_MESSAGEID, messageID);
         values.put(COLUMN_SENDER, sender);
         values.put(COLUMN_RECEIVER, receiver);
         values.put(COLUMN_MESSAGE, message);
         values.put(COLUMN_SYMKEY, key);
 
-
         SQLiteDatabase db = getWritableDatabase();
-        String query = "SELECT e.*, MAX(m.'msg_id') "
-                        + "FROM " + TABLE_MESSAGE + " e, " + TABLE_MESSAGE + " m "
-                        + "WHERE e.'" + COLUMN_MESSAGEID + "' = m.'" + COLUMN_MESSAGEID + "'";
-
-        Cursor cursor = db.rawQuery(query, null);
-        cursor.moveToFirst();
-
-        int maxID = cursor.getInt(cursor.getColumnIndex(COLUMN_MESSAGEID));
-        String existingSender = cursor.getString(cursor.getColumnIndex(COLUMN_SENDER));
-        String existingReceiver = cursor.getString(cursor.getColumnIndex(COLUMN_RECEIVER));
-        String existingMessage = cursor.getString(cursor.getColumnIndex(COLUMN_MESSAGE));
-        String existingKey = cursor.getString(cursor.getColumnIndex(COLUMN_SYMKEY));
-
-        if (existingSender.equals(sender) && existingReceiver.equals(receiver) &&
-                existingMessage.equals(message) && existingKey.equals(key)) {
-            db.close();
-
-        } else {
-            db.insert(TABLE_MESSAGE, null, values);
-        }
-
+        db.insert(TABLE_MESSAGE, null, values);
         db.close();
     }
 
