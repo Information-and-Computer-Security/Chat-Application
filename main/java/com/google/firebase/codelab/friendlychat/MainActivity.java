@@ -252,7 +252,7 @@ public class MainActivity extends AppCompatActivity
                     //  TODO: This is where the decryption should be completed
 
                     // Query database to prevent duplicate enries
-                    String currentMsgID = friendlyMessage.getID().tooString();
+                    String currentMsgID = friendlyMessage.getID();
                     if (!databaseManger.checkDuplicateEntry(currentMsgID)) {
                         databaseManger.insertMessage(currentMsgID, friendlyMessage.getName(), friendlyMessage.getText());
                     }

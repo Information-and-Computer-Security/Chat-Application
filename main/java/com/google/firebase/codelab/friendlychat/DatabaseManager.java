@@ -81,11 +81,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
             return false;
         }
 
-//        cursor.moveToFirst();
-//        dbString += cursor.getString(cursor.getColumnIndex("private_key"));
-
         db.close();
-//        return dbString;
     }
 
 
@@ -101,20 +97,6 @@ public class DatabaseManager extends SQLiteOpenHelper {
         db.insert(TABLE_ACCOUNT, null, values);
         db.close();
     }
-
-    public String retreivePrivateKey(String firebaseID) {
-        String dbString = "";
-        SQLiteDatabase db = getWritableDatabase();
-        String query = "SELECT " + COLUMN_PVTKEY + " FROM " + TABLE_ACCOUNT + " WHERE " + COLUMN_FIREBASEID + "='" + firebaseID + "'";
-        Cursor cursor = db.rawQuery(query, null);
-        cursor.moveToFirst();
-        dbString += cursor.getString(cursor.getColumnIndex("private_key"));
-
-        db.close();
-        return dbString;
-    }
-
-}
 
 
 
