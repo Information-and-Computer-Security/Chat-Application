@@ -9,7 +9,7 @@ import android.support.annotation.Nullable;
 
 public class DatabaseManager extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 11;
+    private static final int DATABASE_VERSION = 12;
     private static final String DATABASE_NAME = "local_backup.db";
 
     // TableID and columns for messages table
@@ -18,15 +18,6 @@ public class DatabaseManager extends SQLiteOpenHelper {
     private static final String COLUMN_SENDER = "sender";
     private static final String COLUMN_MESSAGE = "message";
 
-    // TableID and columns for account table
-    private static final String TABLE_ACCOUNT = "account";
-    private static final String COLUMN_ACCOUNTID = "account_id";
-    private static final String COLUMN_FIREBASEID = "firebase_id";
-    private static final String COLUMN_USERNAME = "username";
-    private static final String COLUMN_EMAIL = "email";
-    private static final String COLUMN_PASSWORD = "password";
-    private static final String COLUMN_PVTKEY = "private_key";
-
     public DatabaseManager(@Nullable Context context, @Nullable String name, @Nullable SQLiteDatabase.CursorFactory factory, int version) {
         super(context, DATABASE_NAME, factory, DATABASE_VERSION);
     }
@@ -34,21 +25,10 @@ public class DatabaseManager extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String query = "CREATE TABLE " + TABLE_MESSAGE + "("
-                + COLUMN_MESSAGEID + " STRING PRIMARY KEY, "
+                + COLUMN_MESSAGEID + " TEXT PRIMARY KEY, "
                 + COLUMN_SENDER + " TEXT NOT NULL, "
                 + COLUMN_MESSAGE + " TEXT NOT NULL, "
         db.execSQL(query);
-
-        query = new String();
-        query = "CREATE TABLE " + TABLE_ACCOUNT + "("
-                + COLUMN_ACCOUNTID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + COLUMN_FIREBASEID + " TEXT NOT NULL, "
-                + COLUMN_USERNAME + " TEXT NOT NULL, "
-                + COLUMN_EMAIL + " TEXT NOT NULL, "
-                + COLUMN_PASSWORD + " TEXT NOT NULL, "
-                + COLUMN_PVTKEY + " TEXT NOT NULL" + ");";
-        db.execSQL(query);
-    }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -79,20 +59,6 @@ public class DatabaseManager extends SQLiteOpenHelper {
             return false;
         }
 
-        db.close();
-    }
-
-
-    public void insertAccount(String firebaseID, String username, String email, String password, String privateKey) { //TODO: Add inserts for account
-        ContentValues values = new ContentValues();
-        values.put(COLUMN_FIREBASEID, firebaseID);
-        values.put(COLUMN_USERNAME, username);
-        values.put(COLUMN_EMAIL, email);
-        values.put(COLUMN_PASSWORD, password);
-        values.put(COLUMN_PVTKEY, privateKey);
-
-        SQLiteDatabase db = getWritableDatabase();
-        db.insert(TABLE_ACCOUNT, null, values);
         db.close();
     }
 
