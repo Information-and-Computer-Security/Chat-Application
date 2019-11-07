@@ -9,7 +9,7 @@ import android.support.annotation.Nullable;
 
 public class DatabaseManager extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 13;
+    private static final int DATABASE_VERSION = 14;
     private static final String DATABASE_NAME = "local_backup.db";
 
     // TableID and columns for messages table
