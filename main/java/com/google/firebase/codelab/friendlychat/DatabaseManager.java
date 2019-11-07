@@ -9,7 +9,7 @@ import android.support.annotation.Nullable;
 
 public class DatabaseManager extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 12;
+    private static final int DATABASE_VERSION = 13;
     private static final String DATABASE_NAME = "local_backup.db";
 
     // TableID and columns for messages table
@@ -33,11 +33,10 @@ public class DatabaseManager extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_MESSAGE);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_ACCOUNT);
         onCreate(db);
     }
 
-    public void insertMessage(String messageID, String sender, String message) { //TODO: change to add row into message table
+    public void insertMessage(String messageID, String sender, String message) {
         ContentValues values = new ContentValues();
         value.put(COLUMN_MESSAGEID, messageID);
         values.put(COLUMN_SENDER, sender);
