@@ -9,16 +9,14 @@ import android.support.annotation.Nullable;
 
 public class DatabaseManager extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 10;
+    private static final int DATABASE_VERSION = 11;
     private static final String DATABASE_NAME = "local_backup.db";
 
     // TableID and columns for messages table
     private static final String TABLE_MESSAGE = "messages";
     private static final String COLUMN_MESSAGEID = "msg_id";
     private static final String COLUMN_SENDER = "sender";
-    private static final String COLUMN_RECEIVER = "receiver";
     private static final String COLUMN_MESSAGE = "message";
-    private static final String COLUMN_SYMKEY = "symetric_key";
 
     // TableID and columns for account table
     private static final String TABLE_ACCOUNT = "account";
