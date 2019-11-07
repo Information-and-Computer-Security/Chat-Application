@@ -38,9 +38,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
         String query = "CREATE TABLE " + TABLE_MESSAGE + "("
                 + COLUMN_MESSAGEID + " STRING PRIMARY KEY, "
                 + COLUMN_SENDER + " TEXT NOT NULL, "
-                + COLUMN_RECEIVER + " TEXT NOT NULL, "
                 + COLUMN_MESSAGE + " TEXT NOT NULL, "
-                + COLUMN_SYMKEY + " TEXT NOT NULL" + ");";
         db.execSQL(query);
 
         query = new String();
@@ -61,18 +59,35 @@ public class DatabaseManager extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void insertMessage(String messageID, String sender, String receiver, String message, String key) { //TODO: change to add row into message table
+    public void insertMessage(String messageID, String sender, String message) { //TODO: change to add row into message table
         ContentValues values = new ContentValues();
         value.put(COLUMN_MESSAGEID, messageID);
         values.put(COLUMN_SENDER, sender);
-        values.put(COLUMN_RECEIVER, receiver);
         values.put(COLUMN_MESSAGE, message);
-        values.put(COLUMN_SYMKEY, key);
 
         SQLiteDatabase db = getWritableDatabase();
         db.insert(TABLE_MESSAGE, null, values);
         db.close();
     }
+
+    public boolean checkDuplicateEntry(String messageID) {
+        String dbString = "";
+        SQLiteDatabase db = getWritableDatabase();
+        String query = "SELECT " + COLUMN_MESSAGEID + " FROM " + TABLE_MESSAGE + " WHERE " + COLUMN_MESSAGEID + " = '" + messageID + "'";
+        if (Cursor cursor = db.rawQuery(query, null)) {
+            return true;
+
+        } else {
+            return false;
+        }
+
+//        cursor.moveToFirst();
+//        dbString += cursor.getString(cursor.getColumnIndex("private_key"));
+
+        db.close();
+//        return dbString;
+    }
+
 
     public void insertAccount(String firebaseID, String username, String email, String password, String privateKey) { //TODO: Add inserts for account
         ContentValues values = new ContentValues();

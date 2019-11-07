@@ -105,6 +105,10 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    DatabaseManger databaseManger;
+
+    databaseManager = new DatabaseManager(this, null, null, 10);
+
     private static final String TAG = "MainActivity";
     public static final String MESSAGES_CHILD = "messages";
     private static final int REQUEST_INVITE = 1;
@@ -247,6 +251,13 @@ public class MainActivity extends AppCompatActivity
                     }
                     //  TODO: This is where the decryption should be completed
 
+                    // Query database to prevent duplicate enries
+                    String currentMsgID = friendlyMessage.getID().tooString();
+                    if (!databaseManger.checkDuplicateEntry(currentMsgID)) {
+                        databaseManger.insertMessage(currentMsgID, friendlyMessage.getName(), friendlyMessage.getText());
+                    }
+
+
                     viewHolder.messageTextView.setText(friendlyMessage.getText());
                     viewHolder.messageTextView.setVisibility(TextView.VISIBLE);
                     viewHolder.messageImageView.setVisibility(ImageView.GONE);
@@ -333,6 +344,7 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
+        //TODO: add to database table
         mSendButton = (Button) findViewById(R.id.sendButton);
         mSendButton.setOnClickListener(new View.OnClickListener() {
             @Override
