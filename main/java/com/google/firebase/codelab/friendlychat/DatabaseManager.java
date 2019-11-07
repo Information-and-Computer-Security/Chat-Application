@@ -27,8 +27,9 @@ public class DatabaseManager extends SQLiteOpenHelper {
         String query = "CREATE TABLE " + TABLE_MESSAGE + "("
                 + COLUMN_MESSAGEID + " TEXT PRIMARY KEY, "
                 + COLUMN_SENDER + " TEXT NOT NULL, "
-                + COLUMN_MESSAGE + " TEXT NOT NULL, "
+                + COLUMN_MESSAGE + " TEXT NOT NULL, ");";
         db.execSQL(query);
+	}
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -50,7 +51,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
     public boolean checkDuplicateEntry(String messageID) {
         String dbString = "";
         SQLiteDatabase db = getWritableDatabase();
-        String query = "SELECT " + COLUMN_MESSAGEID + " FROM " + TABLE_MESSAGE + " WHERE " + COLUMN_MESSAGEID + " = '" + messageID + "'";
+        String query = "SELECT '" + COLUMN_MESSAGEID + "' FROM " + TABLE_MESSAGE + " WHERE '" + COLUMN_MESSAGEID + "' = '" + messageID + "'";
         if (Cursor cursor = db.rawQuery(query, null)) {
             return true;
 
