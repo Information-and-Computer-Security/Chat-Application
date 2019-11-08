@@ -107,19 +107,19 @@ public class MainActivity extends AppCompatActivity
 
     public static class User {
 
-        //public String id;
-        public String name;
+        public String id;
+        //public String name;
         public String email;
 
-        public User(String name, String email){
-            //this.id = id;
-            this.name = name;
+        public User(String id, String email){
+            this.id = id;
+            //this.name = name;
             this.email = email;
     }
 
-        public String getUserName() {
-            return this.name;
-        }
+       // public String getUserName() {
+       //     return this.name;
+       // }
         public String getEmail() {return this.email;}
     }
 
@@ -214,11 +214,7 @@ public class MainActivity extends AppCompatActivity
             }*/
         }
 
-        //final int REQUEST_CODE = 1;
-        //Intent intent = new Intent();
-        //intent.setClassName("com.google.firebase.codelab.friendlychat", "com.google.firebase.codelab.friendlychat.SelectChat");
-        //startActivityForResult(intent, REQUEST_CODE);
-        //MESSAGES_CHILD = data.getStringExtra(intent)
+
         Intent i = getIntent();
         MESSAGES_CHILD = i.getStringExtra("user");
         //MESSAGES_CHILD = SelectChat.getData();

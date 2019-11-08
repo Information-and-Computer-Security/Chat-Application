@@ -14,6 +14,8 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import com.firebase.ui.database.SnapshotParser;
 import com.google.firebase.auth.FirebaseAuth;
@@ -33,10 +35,12 @@ public class SelectChat extends AppCompatActivity {
     public static ArrayList<String> users;
     public static String MESSAGES_CHILD = "group_messages";
     public static String getData(){return MESSAGES_CHILD;}
-    private DatabaseReference mFirebaseDatabaseReference;
-    private FirebaseAuth mFirebaseAuth;
-    private FirebaseUser mFirebaseUser;
-    private String mUsername;
+    private DatabaseReference mFirebaseDatabaseReference1;
+    public ArrayList<String> chatList = new ArrayList<>();
+    private FirebaseAuth mFirebaseAuth1;
+    private FirebaseUser mFirebaseUser1;
+    private String mUsername1;
+    public CountDownLatch done = new CountDownLatch(1);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //ArrayList users;
@@ -44,64 +48,62 @@ public class SelectChat extends AppCompatActivity {
         setContentView(R.layout.select);
         final ListView chats = findViewById(R.id.list);
 
-        mFirebaseAuth = FirebaseAuth.getInstance();
-        mFirebaseUser = mFirebaseAuth.getCurrentUser();
-        mUsername = mFirebaseUser.getDisplayName();
-        mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference("users");
-        System.out.println(mFirebaseDatabaseReference.getKey());
-        DatabaseReference userNameRef = mFirebaseDatabaseReference;//child("name");
+        mFirebaseAuth1 = FirebaseAuth.getInstance();
+        mFirebaseUser1 = mFirebaseAuth1.getCurrentUser();
+        mUsername1 = mFirebaseUser1.getDisplayName();
+        mFirebaseDatabaseReference1 = FirebaseDatabase.getInstance().getReference("users");
+        System.out.println(mFirebaseDatabaseReference1.getKey());
+        DatabaseReference userNameRef = mFirebaseDatabaseReference1;
 
-        mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
+        mFirebaseDatabaseReference1 = FirebaseDatabase.getInstance().getReference();
 
+        //Add Group Chatroom
+        chatList.add("Group Chat");
 
-
-        userNameRef.addValueEventListener( new ValueEventListener() {
+        //Get a list of all registered users, add to chat list
+        userNameRef.addListenerForSingleValueEvent( new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                //super.onDataChange(dataSnapshot);
                 users = new ArrayList<String>();
                 for (DataSnapshot snap : dataSnapshot.getChildren()){
-                    users.add(String.valueOf(snap.getKey()));}}
+                    System.out.println(snap.getKey());
+                    users.add(String.valueOf(snap.getKey()));}
+                for(String i : users)
+                    chatList.add(i);
 
-            public void onCancelled(DatabaseError databaseError){}});
-        ArrayList<String> chatList = new ArrayList<>();
-        //TESTING
-       // chatList.add("Group Chat");
-        for(String i : users)
-            chatList.add(i);
-        chatList.add("Group Chat");
-        chatList.remove(mUsername);
-        //chatList.add("USER 1");
-        //chatList.add("messages");
+                //Remove the username of the current user from the chat list
+                chatList.remove(mUsername1);
 
-        //chatList.add(users.get(0));
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, chatList);
-        chats.setAdapter(arrayAdapter);
-        chats.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String clickedItem=(String) chats.getItemAtPosition(position);
-                if (clickedItem == "Group Chat") clickedItem = "group_messages";
-                else{
-                    ArrayList<String> messageID = new ArrayList<String>();
-                    messageID.add(clickedItem);
-                    messageID.add(mUsername);
-                    Collections.sort(messageID);
-                    clickedItem = messageID.get(0) + "_" + messageID.get(1);
-                }
+                //Set view to select which chatroom to use, store as either group_messages
+                //Or as the two users as user1_user2 sorted alphabetically
+                ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(SelectChat.this, android.R.layout.simple_list_item_1, chatList);
+                chats.setAdapter(arrayAdapter);
+                chats.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        String clickedItem=(String) chats.getItemAtPosition(position);
+                        if (clickedItem == "Group Chat") clickedItem = "group_messages";
+                        else{
+                            ArrayList<String> messageID = new ArrayList<String>();
+                            messageID.add(clickedItem);
+                            messageID.add(mUsername1);
+                            Collections.sort(messageID);
+                            clickedItem = messageID.get(0) + "_" + messageID.get(1);
+                        }
 
-
-
-                MESSAGES_CHILD = clickedItem;
-                System.out.println(MESSAGES_CHILD);
-                Intent intent = new Intent(SelectChat.this, MainActivity.class);
-                //System.out.println(clickedItem);
-                intent.putExtra("user", clickedItem);
-                startActivity(intent);
-                setResult(57,intent);
-                finish();
+                        //Return back to main activity
+                        MESSAGES_CHILD = clickedItem;
+                        System.out.println(MESSAGES_CHILD);
+                        Intent intent = new Intent(SelectChat.this, MainActivity.class);
+                        intent.putExtra("user", clickedItem);
+                        startActivity(intent);
+                        setResult(57,intent);
+                        finish();
+                    }
+                });
             }
-        });
+            public void onCancelled(DatabaseError databaseError){}});
+
     }
 }
 
